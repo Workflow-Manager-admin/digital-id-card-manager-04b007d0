@@ -5,7 +5,7 @@ Interfaces with a PostgreSQL database and is designed to be consumed by a React 
 
 ---
 
-**Note:** This backend supports _generic user authentication only_. There are **no user roles, no RBAC (role-based access control), and no privilege levels**—every authenticated user has identical access to all features. There are no references to roles or authorization levels anywhere in this backend.
+> **Note:** This backend supports **generic user authentication only**—there are no user roles, no role-based access control (RBAC), and no privilege levels. All users, once authenticated, have identical access to all features provided by the backend. All authentication endpoints (signup/login) treat users generically, with no role or permission differentiation. Any earlier references to roles or authorization logic have been fully removed.
 
 ---
 
