@@ -5,26 +5,26 @@ Interfaces with a PostgreSQL database and is designed to be consumed by a React 
 
 ---
 
-**Note:** This backend supports plain user authentication only. There are **no roles, no RBAC (role-based access control), and no privilege/authorization levels** beyond simple login. All features of the backend are available to any authenticated user.
+**Note:** This backend supports _generic user authentication only_. There are **no user roles, no RBAC (role-based access control), and no privilege levels**—every authenticated user has identical access to all features. There are no references to roles or authorization levels anywhere in this backend.
 
 ---
 
 ## 🛠 Environment Variables
 
-Backend configuration is handled via a `.env` file in this (`id_backend_api/`) folder.
+Backend configuration is handled via the `.env` file in this (`id_backend_api/`) folder.
 
-| Variable         | Purpose                                      | Example             |
-|------------------|----------------------------------------------|---------------------|
-| POSTGRES_URL     | Hostname/address of PostgreSQL DB            | localhost           |
-| POSTGRES_USER    | DB username (see database setup)             | appuser             |
-| POSTGRES_PASSWORD| DB user password (see database setup)        | dbuser123           |
-| POSTGRES_DB      | Database name                                | myapp               |
-| POSTGRES_PORT    | Port (default: 5000)                         | 5000                |
-| SECRET_KEY       | Secret key for JWT token signing             | changeme            |
+| Variable         | Purpose                                | Example      |
+|------------------|----------------------------------------|--------------|
+| POSTGRES_URL     | Hostname/address of PostgreSQL DB      | localhost    |
+| POSTGRES_USER    | DB username (see database setup)       | appuser      |
+| POSTGRES_PASSWORD| DB user password (see database setup)  | dbuser123    |
+| POSTGRES_DB      | Database name                          | myapp        |
+| POSTGRES_PORT    | Port (default: 5000)                   | 5000         |
+| SECRET_KEY       | Secret key for JWT token signing       | changeme     |
 
-There are no environment variables for user roles or authorization—this backend uses generic, plain authentication only.
+> There are **no environment variables for roles/authorization**—this backend uses generic, plain authentication only.
 
-These are **required** for backend to start and connect securely to PostgreSQL!
+These values are **required** for backend to start and connect securely to PostgreSQL!
 
 ---
 
@@ -32,7 +32,6 @@ These are **required** for backend to start and connect securely to PostgreSQL!
 
 - The backend expects PostgreSQL env variables (see above).
 - You must run database migrations (`schema.sql`) and create a user/DB as described in the database README.
-- Environment configuration for the DB is also mirrored in `../digital-id-card-manager-e92f97cd/id_database/db_visualizer/postgres.env` (for Node.js DB tool).
 
 ---
 
@@ -46,28 +45,30 @@ These are **required** for backend to start and connect securely to PostgreSQL!
 
 ## 🚦 E2E Development/Deployment Steps
 
-**1. Start the Database**
-- Follow the DB container README and startup scripts.
+1. Start the Database  
+   – Follow the DB container README and startup scripts.
 
-**2. (Re)create migrations, then run the backend**
-- Ensure `.env` is present and configured.
-- Start the Flask backend (dev):
-  ```
-  export $(cat .env | xargs)
-  python run.py
-  ```
-  Or use `flask run` with appropriate env vars.
+2. (Re)create migrations, then run the backend  
+   – Ensure `.env` is present and configured.  
+   – Start the Flask backend (dev):
 
-**3. Set up and run the frontend**
-- The React `.env` in the frontend must point to this backend:
-  ```
-  REACT_APP_API_URL=http://localhost:5000
-  ```
+      ```
+      export $(cat .env | xargs)
+      python run.py
+      ```
+      (Or use `flask run` with appropriate env vars)
 
-**4. Integration Flow**
-- Users sign up/login on the React app.
-- React frontend calls `/auth`, `/idcards`, `/holders`, etc. here.
-- Backend APIs handle business logic and DB access.
+3. Set up and run the frontend  
+   – The React `.env` in the frontend must point to this backend:
+
+      ```
+      REACT_APP_API_URL=http://localhost:5000
+      ```
+
+4. Integration Flow  
+   – Users sign up/login on the React app.  
+   – React frontend calls `/auth`, `/idcards`, `/holders`, etc. here.  
+   – Backend APIs handle business logic and DB access.
 
 ---
 
