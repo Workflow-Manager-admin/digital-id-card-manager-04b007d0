@@ -8,7 +8,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "changeme")
 
 # PUBLIC_INTERFACE
 def encode_auth_token(user_id, expires_in=3600):
-    """Generates JWT token (no roles)"""
+    """Generates JWT token for generic user (no roles/RBAC)"""
     payload = {
         "sub": user_id,
         "exp": datetime.utcnow() + timedelta(seconds=expires_in)
