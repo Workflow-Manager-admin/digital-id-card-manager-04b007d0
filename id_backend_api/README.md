@@ -3,6 +3,15 @@
 Flask-based REST API for managing users, authentication, and Digital ID card data.
 Interfaces with a PostgreSQL database and is designed to be consumed by a React frontend.
 
+## 🚀 Features
+
+- User registration & login (no roles, no RBAC)
+- CRUD endpoints for digital ID card "holders" and individual ID cards
+- API to link/unlink a unique card number to a holder profile
+- JWT-based authentication (all authenticated users are equal—no admin/RBAC)
+- OpenAPI/Swagger docs (`/docs`)
+- PostgreSQL DB integration, `.env` and migration script included
+
 ---
 
 > **Note:** This backend supports **generic user authentication only**—there are no user roles, no role-based access control (RBAC), and no privilege levels. All users, once authenticated, have identical access to all features provided by the backend. All authentication endpoints (signup/login) treat users generically, with no role or permission differentiation. Any earlier references to roles or authorization logic have been fully removed.
@@ -31,7 +40,14 @@ These values are **required** for backend to start and connect securely to Postg
 ## 🗄️ Database Integration
 
 - The backend expects PostgreSQL env variables (see above).
-- You must run database migrations (`schema.sql`) and create a user/DB as described in the database README.
+- You **must** run database migrations using `schema.sql` in this directory to set up user, holders, and idcards tables before using the backend.
+- Create a compatible user and database in PostgreSQL if needed.
+
+**Migrate schema:**
+```bash
+psql -h $POSTGRES_URL -U $POSTGRES_USER -d $POSTGRES_DB -f schema.sql
+```
+Adjust variables as needed.
 
 ---
 
