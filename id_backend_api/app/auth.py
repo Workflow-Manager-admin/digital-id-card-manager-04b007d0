@@ -7,11 +7,10 @@ from flask import request, jsonify
 SECRET_KEY = os.getenv("SECRET_KEY", "changeme")
 
 # PUBLIC_INTERFACE
-def encode_auth_token(user_id, user_role, expires_in=3600):
-    """Generates JWT token"""
+def encode_auth_token(user_id, expires_in=3600):
+    """Generates JWT token (no roles)"""
     payload = {
         "sub": user_id,
-        "role": user_role,
         "exp": datetime.utcnow() + timedelta(seconds=expires_in)
     }
     return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
@@ -28,9 +27,9 @@ def decode_auth_token(token):
         return None
 
 # PUBLIC_INTERFACE
-def jwt_required(roles=None):
+def jwt_required():
     """
-    Decorator to protect endpoints and optionally enforce role-based access.
+    Decorator to protect endpoints (authentication only, not authorization).
     """
     def decorator(f):
         @wraps(f)
@@ -42,9 +41,7 @@ def jwt_required(roles=None):
             data = decode_auth_token(token)
             if not data:
                 return jsonify({"message": "Invalid or expired token"}), 401
-            if roles and data.get("role") not in roles:
-                return jsonify({"message": "Forbidden"}), 403
-            request.user = {"id": data["sub"], "role": data["role"]}
+            request.user = {"id": data["sub"]}
             return f(*args, **kwargs)
         return wrapper
     return decorator

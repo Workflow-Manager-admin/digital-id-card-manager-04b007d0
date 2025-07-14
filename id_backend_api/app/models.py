@@ -3,12 +3,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 # PUBLIC_INTERFACE
 class User:
-    """User model representing users of Digital ID Card system."""
-    def __init__(self, id, username, password, role):
+    """User model representing users of Digital ID Card system (role-agnostic)."""
+    def __init__(self, id, username, password):
         self.id = id
         self.username = username
         self.password_hash = generate_password_hash(password)
-        self.role = role
         self.created_at = datetime.utcnow()
 
     def check_password(self, password):

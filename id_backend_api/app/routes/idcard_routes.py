@@ -8,9 +8,9 @@ blp = Blueprint("idcards", __name__, url_prefix="/idcards", description="ID Card
 # PUBLIC_INTERFACE
 @blp.route("")
 class IDCardList(MethodView):
-    """List and create ID cards (unique numbers)"""
+    """List and create ID cards (authentication required)"""
 
-    @jwt_required(roles=["admin", "manager"])
+    @jwt_required()
     def get(self):
         """List all ID cards"""
         conn = get_db_connection()
@@ -23,7 +23,7 @@ class IDCardList(MethodView):
         conn.close()
         return jsonify(cards)
 
-    @jwt_required(roles=["admin", "manager"])
+    @jwt_required()
     def post(self):
         """Create new unique number, optionally link holder"""
         data = request.json
@@ -52,9 +52,9 @@ class IDCardList(MethodView):
 # PUBLIC_INTERFACE
 @blp.route("/<int:idcard_id>")
 class IDCardItem(MethodView):
-    """Get/update/delete a single ID card"""
+    """Get/update/delete a single ID card (authentication required)"""
 
-    @jwt_required(roles=["admin", "manager", "holder"])
+    @jwt_required()
     def get(self, idcard_id):
         conn = get_db_connection()
         cur = conn.cursor()
@@ -67,7 +67,7 @@ class IDCardItem(MethodView):
             return jsonify({"message": "ID card not found"}), 404
         return jsonify({"id": row[0], "holder_id": row[1], "unique_number": row[2]})
 
-    @jwt_required(roles=["admin", "manager"])
+    @jwt_required()
     def put(self, idcard_id):
         data = request.json
         holder_id = data.get("holder_id")
@@ -86,7 +86,7 @@ class IDCardItem(MethodView):
         conn.close()
         return jsonify({"id": idcard_id})
 
-    @jwt_required(roles=["admin"])
+    @jwt_required()
     def delete(self, idcard_id):
         conn = get_db_connection()
         cur = conn.cursor()
@@ -101,9 +101,9 @@ class IDCardItem(MethodView):
 # PUBLIC_INTERFACE
 @blp.route("/link", methods=["POST"])
 class IDCardLink(MethodView):
-    """Link a unique number to a holder"""
+    """Link a unique number to a holder (authentication required)"""
 
-    @jwt_required(roles=["admin", "manager"])
+    @jwt_required()
     def post(self):
         data = request.json
         idcard_id = data.get("idcard_id")
