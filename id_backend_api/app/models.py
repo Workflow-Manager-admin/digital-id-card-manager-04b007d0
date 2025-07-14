@@ -3,7 +3,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 # PUBLIC_INTERFACE
 class User:
-    """User model representing users of Digital ID Card system (generic, no roles)."""
+    """User model representing users of Digital ID Card system.
+
+    There is no role/RBAC logic. All users are considered generic.
+    """
     def __init__(self, id, username, password):
         self.id = id
         self.username = username

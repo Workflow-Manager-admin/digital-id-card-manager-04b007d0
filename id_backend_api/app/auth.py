@@ -8,7 +8,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "changeme")
 
 # PUBLIC_INTERFACE
 def encode_auth_token(user_id, expires_in=3600):
-    """Generates JWT token for generic user (no roles/RBAC)"""
+    """Generates JWT token for a generic user (no roles/RBAC present)"""
     payload = {
         "sub": user_id,
         "exp": datetime.utcnow() + timedelta(seconds=expires_in)
@@ -17,7 +17,7 @@ def encode_auth_token(user_id, expires_in=3600):
 
 # PUBLIC_INTERFACE
 def decode_auth_token(token):
-    """Decode JWT token and return payload, else raise exception"""
+    """Decode JWT token and return payload dictionary, returning None if expired/invalid."""
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         return payload
@@ -29,7 +29,8 @@ def decode_auth_token(token):
 # PUBLIC_INTERFACE
 def jwt_required():
     """
-    Decorator to protect endpoints (authentication only, not authorization).
+    Decorator to protect endpoints (authentication only).
+    There is no authorization/roles/RBAC logic.
     """
     def decorator(f):
         @wraps(f)

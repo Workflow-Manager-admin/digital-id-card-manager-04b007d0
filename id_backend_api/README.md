@@ -5,6 +5,10 @@ Interfaces with a PostgreSQL database and is designed to be consumed by a React 
 
 ---
 
+**Note:** This backend supports plain user authentication only. There are **no roles, no RBAC (role-based access control), and no privilege/authorization levels** beyond simple login. All features of the backend are available to any authenticated user.
+
+---
+
 ## 🛠 Environment Variables
 
 Backend configuration is handled via a `.env` file in this (`id_backend_api/`) folder.
@@ -17,6 +21,8 @@ Backend configuration is handled via a `.env` file in this (`id_backend_api/`) f
 | POSTGRES_DB      | Database name                                | myapp               |
 | POSTGRES_PORT    | Port (default: 5000)                         | 5000                |
 | SECRET_KEY       | Secret key for JWT token signing             | changeme            |
+
+There are no environment variables for user roles or authorization—this backend uses generic, plain authentication only.
 
 These are **required** for backend to start and connect securely to PostgreSQL!
 
@@ -34,7 +40,7 @@ These are **required** for backend to start and connect securely to PostgreSQL!
 
 - The React app calls this API at the base URL you specify (usually `http://localhost:5000`).
 - CORS is enabled to allow connections from the frontend.
-- JWT tokens are used for authorization – these are sent as `Authorization: Bearer ...` in request headers.
+- JWT tokens are used for authentication – these are sent as `Authorization: Bearer ...` in request headers.
 
 ---
 

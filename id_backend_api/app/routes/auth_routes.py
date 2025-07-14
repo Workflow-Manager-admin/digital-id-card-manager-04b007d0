@@ -9,7 +9,10 @@ blp = Blueprint("auth", __name__, url_prefix="/auth", description="Authenticatio
 # PUBLIC_INTERFACE
 @blp.route("/signup")
 class SignUp(MethodView):
-    """Register a new generic user (RBAC/roles are not used)"""
+    """Register a new user.
+
+    No roles or RBAC are used. All signups create a plain user.
+    """
 
     def post(self):
         data = request.json
@@ -37,7 +40,10 @@ class SignUp(MethodView):
 # PUBLIC_INTERFACE
 @blp.route("/login")
 class Login(MethodView):
-    """Log in a registered user (no role/privilege levels included)"""
+    """Log in a registered user.
+
+    All users are treated equally after authentication (no role/RBAC logic).
+    """
 
     def post(self):
         data = request.json
