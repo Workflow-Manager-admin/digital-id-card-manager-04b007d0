@@ -1,4 +1,5 @@
-from flask import Blueprint, request, jsonify
+from flask_smorest import Blueprint
+from flask import request, jsonify
 from flask.views import MethodView
 from werkzeug.security import generate_password_hash, check_password_hash
 from ..db import get_db_connection

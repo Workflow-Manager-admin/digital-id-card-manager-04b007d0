@@ -1,4 +1,5 @@
-from flask import Blueprint, request, jsonify
+from flask_smorest import Blueprint
+from flask import request, jsonify
 from flask.views import MethodView
 from ..db import get_db_connection
 from ..auth import jwt_required
