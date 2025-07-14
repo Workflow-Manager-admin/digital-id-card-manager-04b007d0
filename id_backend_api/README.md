@@ -20,7 +20,7 @@ This is a Flask-based REST API for managing users and digital ID cards. All auth
 ## 🛠 Environment Variables
 
 - Backend config is handled via a `.env` file in the `id_backend_api/` directory.
-- See `.env.example` for required variable names and example values.
+- Copy from `.env.example` and supply the required values.
 
 | Variable           | Purpose                                | Example      |
 |--------------------|----------------------------------------|--------------|
@@ -31,9 +31,9 @@ This is a Flask-based REST API for managing users and digital ID cards. All auth
 | POSTGRES_PORT      | Port (default: 5432)                   | 5432         |
 | SECRET_KEY         | Secret key for JWT token signing       | changeme     |
 
-> _No environment variables for roles or permissions. The backend uses plain, generic authentication only._
+See `.env.example` for the required format. All values above are **required**.
 
-All values above are **required** for the server to connect and run.
+> _No environment variables for roles or permissions. The backend uses plain, generic authentication only._
 
 ---
 
