@@ -1,111 +1,117 @@
 # Digital ID Card Manager – Backend API (Flask)
 
-Flask-based REST API for managing users, authentication, and Digital ID card data.
-Interfaces with a PostgreSQL database and is designed to be consumed by a React frontend.
-
-## 🚀 Features
-
-- User registration & login (no roles, no RBAC)
-- CRUD endpoints for digital ID card "holders" and individual ID cards
-- API to link/unlink a unique card number to a holder profile
-- JWT-based authentication (all authenticated users are equal—no admin/RBAC)
-- OpenAPI/Swagger docs (`/docs`)
-- PostgreSQL DB integration, `.env` and migration script included
+This is a Flask-based REST API for managing users and digital ID cards. All authentication is generic (no roles, no RBAC), and the API connects to a PostgreSQL database. Designed to be consumed by a React frontend.
 
 ---
 
-> **Note:** This backend supports **generic user authentication only**—there are no user roles, no role-based access control (RBAC), and no privilege levels. All users, once authenticated, have identical access to all features provided by the backend. All authentication endpoints (signup/login) treat users generically, with no role or permission differentiation. Any earlier references to roles or authorization logic have been fully removed.
+## 🚀 Features
+
+- **Generic user registration & login** (no roles, no RBAC)
+- **CRUD endpoints for digital ID card "holders"** (profiles of people)
+- **CRUD endpoints for individual digital ID cards**
+- **Unique number linking**: APIs to link a card’s unique number to a holder profile
+- **JWT-based authentication:** All users have equal access (no privilege differentiation)
+- **OpenAPI/Swagger docs** available live at `/docs`
+- **Full PostgreSQL DB integration** (see `.env.example` and included `schema.sql`)
+- **No RBAC, no role fields—truly generic authentication only**
 
 ---
 
 ## 🛠 Environment Variables
 
-Backend configuration is handled via the `.env` file in this (`id_backend_api/`) folder.
+- Backend config is handled via a `.env` file in the `id_backend_api/` directory.
+- See `.env.example` for required variable names and example values.
 
-| Variable         | Purpose                                | Example      |
-|------------------|----------------------------------------|--------------|
-| POSTGRES_URL     | Hostname/address of PostgreSQL DB      | localhost    |
-| POSTGRES_USER    | DB username (see database setup)       | appuser      |
-| POSTGRES_PASSWORD| DB user password (see database setup)  | dbuser123    |
-| POSTGRES_DB      | Database name                          | myapp        |
-| POSTGRES_PORT    | Port (default: 5000)                   | 5000         |
-| SECRET_KEY       | Secret key for JWT token signing       | changeme     |
+| Variable           | Purpose                                | Example      |
+|--------------------|----------------------------------------|--------------|
+| POSTGRES_URL       | Host/address of PostgreSQL DB          | localhost    |
+| POSTGRES_USER      | DB username                            | appuser      |
+| POSTGRES_PASSWORD  | DB user password                       | dbuser123    |
+| POSTGRES_DB        | Database name                          | myapp        |
+| POSTGRES_PORT      | Port (default: 5432)                   | 5432         |
+| SECRET_KEY         | Secret key for JWT token signing       | changeme     |
 
-> There are **no environment variables for roles/authorization**—this backend uses generic, plain authentication only.
+> _No environment variables for roles or permissions. The backend uses plain, generic authentication only._
 
-These values are **required** for backend to start and connect securely to PostgreSQL!
+All values above are **required** for the server to connect and run.
 
 ---
 
 ## 🗄️ Database Integration
 
 - The backend expects PostgreSQL env variables (see above).
-- You **must** run database migrations using `schema.sql` in this directory to set up user, holders, and idcards tables before using the backend.
-- Create a compatible user and database in PostgreSQL if needed.
+- **Before first run:** Use the included `schema.sql` to set up the database tables for users, holders, and ID cards.
+- Make sure a corresponding user + database with correct permissions exist on your PostgreSQL server.
 
-**Migrate schema:**
+Migrate schema with:
 ```bash
 psql -h $POSTGRES_URL -U $POSTGRES_USER -d $POSTGRES_DB -f schema.sql
 ```
-Adjust variables as needed.
+_Adapt variables as needed._
 
 ---
 
 ## 🔗 Frontend Integration
 
-- The React app calls this API at the base URL you specify (usually `http://localhost:5000`).
-- CORS is enabled to allow connections from the frontend.
-- JWT tokens are used for authentication – these are sent as `Authorization: Bearer ...` in request headers.
+- The React app (see separate container) calls this API (usually at `http://localhost:5000`).
+- CORS is enabled (accepts calls from frontend).
+- **JWT Authentication:** Clients must send header: `Authorization: Bearer <token>`.
 
 ---
 
-## 🚦 E2E Development/Deployment Steps
+## 🚦 Development/Deployment Steps
 
-1. Start the Database  
-   – Follow the DB container README and startup scripts.
+1. **Start/PostgreSQL DB**  
+   - Run DB container and initialize (see database README).
 
-2. (Re)create migrations, then run the backend  
-   – Ensure `.env` is present and configured.  
-   – Start the Flask backend (dev):
-
+2. **Bootstrap backend**  
+   - Copy `.env.example` to `.env` and fill in credentials.
+   - Run DB migration as above (psql command).
+   - Install dependencies:
+      ```bash
+      pip install -r requirements.txt
       ```
+   - Start Flask backend (dev):
+      ```bash
       export $(cat .env | xargs)
       python run.py
       ```
-      (Or use `flask run` with appropriate env vars)
+      _Or use `flask run` with the right environment._
 
-3. Set up and run the frontend  
-   – The React `.env` in the frontend must point to this backend:
-
+3. **Set up and run frontend** ([see corresponding frontend README](../id_card_frontend/))
+   - Frontend `.env` must point to the running backend:
       ```
       REACT_APP_API_URL=http://localhost:5000
       ```
 
-4. Integration Flow  
-   – Users sign up/login on the React app.  
-   – React frontend calls `/auth`, `/idcards`, `/holders`, etc. here.  
-   – Backend APIs handle business logic and DB access.
+4. **Integration Flow:**
+   - Users sign up/login on the web frontend.
+   - React app calls backend endpoints like `/auth`, `/holders`, `/idcards`.
+   - Backend processes, stores, and returns requested data.
 
 ---
 
 ## 📝 API Documentation
 
-- OpenAPI spec: `interfaces/openapi.json`
-- Browse live Swagger UI at `/docs` when backend is running.
+- OpenAPI/Swagger: `interfaces/openapi.json`
+- Live browser docs: `http://localhost:5000/docs`
+- Autogenerated, covers all authentication and CRUD flows
 
 ---
 
 ## 👩‍💻 Useful Scripts
 
-- `generate_openapi.py` – Export updated OpenAPI JSON.
-- Standard Python dependency management via `requirements.txt`.
+- `generate_openapi.py` – Export/refresh OpenAPI JSON from Flask.
+- Standard Python dependency management (see `requirements.txt`).
 
 ---
 
 ## 👀 See Also
 
-- Database README for schema, env vars
-- Frontend README (`../id_card_frontend/`) for user/environment setup
+- Database README (DB env vars, schema)
+- Frontend README for environment details
+- `schema.sql` for table layout (users, holders, idcards)
+- `.env.example` as .env template
 
 ---
 
